@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar CME Data Collection & Analysis</title>
+    <!-- CSS Files - Add your existing CSS files here -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style2.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- First Page: Video Background with Form -->
+    <div id="firstPage" class="container">
+        <!-- Video Background -->
+        <video id="solarVideo" class="video-background" autoplay muted>
+            <source src="https://media.istockphoto.com/id/1354242373/video/beautiful-space-flight-to-the-earth-moving-through-asteroids-cloud-near-moon-and-orbiting.mp4?s=mp4-640x640-is&k=20&c=uuuSlZ4PCBNCq4kd26xKC55geSfYHxQwuxAWF6H9LR8=" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Video Overlay Gradient -->
+        <div class="video-overlay"></div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="loading-content">
+                <div class="loading-icon">
+                    <i class="fas fa-sun rotating-sun"></i>
+                    <span>Solar System Loading...</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Overlay -->
+        <div id="formOverlay" class="form-overlay hidden">
+            <div class="form-backdrop"></div>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="sun-icon">
+                        <i class="fas fa-sun rotating-sun-slow"></i>
+                    </div>
+                    <h1 class="form-title">Coronal Mass Ejection Data</h1>
+                    <p class="form-description">Record solar event parameters for analysis</p>
+                </div>
+
+                <div class="form-content">
+                    <form id="cmeForm">
+                        <div class="form-grid">
+                            <!-- Date of CME -->
+                            <div class="form-group">
+                                <label for="date" class="form-label">
+                                    <i class="fas fa-calendar"></i>
+                                    Date of CME
+                                </label>
+                                <input type="date" id="date" name="date" class="form-input" required>
+                            </div>
+
+                            <!-- Time of CME -->
+                            <div class="form-group">
+                                <label for="time" class="form-label">
+                                    <i class="fas fa-clock"></i>
+                                    OnSet Time
+                                </label>
+                                <input type="time" id="time" name="time" class="form-input" required>
+                            </div>
+
+                            <!-- Initial Speed -->
+                            <div class="form-group">
+                                <label for="speed" class="form-label">
+                                    <i class="fas fa-rocket"></i>
+                                    Initial Speed (km/s)
+                                </label>
+                                <input type="number" id="speed" name="speed" placeholder="e.g., 500" class="form-input" required>
+                            </div>
+
+                            <!-- Angular Width -->
+                            <div class="form-group">
+                                <label for="width" class="form-label">
+                                    <i class="fas fa-bolt"></i>
+                                    Angular Width (deg)
+                                </label>
+                                <input type="number" id="width" name="width" placeholder="e.g., 45" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <!-- Source Location -->
+                        <!-- <div class="form-group full-width">
+                            <label for="sourceLocation" class="form-label">
+                                <i class="fas fa-sun"></i>
+                                Source Location
+                            </label>
+                            <input type="text" id="sourceLocation" name="sourceLocation" placeholder="e.g., N10W05" class="form-input" required>
+                        </div> -->
+
+                        <!-- Predicted Arrival Time (Optional) -->
+                        <!-- <div class="form-group full-width">
+                            <label for="arrival" class="form-label">
+                                <i class="fas fa-clock"></i>
+                                Predicted Arrival Time at L1 (Optional)
+                            </label>
+                            <input type="datetime-local" id="arrival" name="arrival" class="form-input">
+                        </div> -->
+
+                        <!-- Action Buttons -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">
+                                Submit CME Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Page: Analysis Features Panel -->
+    <div id="analysisPage" class="hidden">
+        <!-- Animated Space Background -->
+        <div class="space-background">
+            <div class="stars-pattern"></div>
+            <div class="floating-particles"></div>
+        </div>
+
+        <!-- Features Panel -->
+        <div id="featuresPanel" class="features-panel">
+            <div class="panel-backdrop"></div>
+            <div class="panel-container">
+                <!-- Header -->
+                <div class="panel-header">
+                    <div class="header-content">
+                        <h2 class="panel-title">CME Analysis Features</h2>
+                        <div class="header-actions">
+                            <!-- <button id="proceedToSimulation" class="proceed-btn">
+                                <i class="fas fa-play"></i>
+                                Start Simulation
+                            </button> -->
+                            <button id="backToForm" class="close-btn">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to Form
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Toggle -->
+                    <div class="tab-toggle">
+                        <button id="physicsTab" class="tab-btn active">
+                            Physics Based Features
+                        </button>
+                        <button id="statisticalTab" class="tab-btn">
+                            Statistical Based Features
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feature Cards Grid -->
+                <div class="panel-content">
+                    <div id="featuresGrid" class="features-grid">
+                        <!-- Feature cards will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="featureModal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3 id="modalTitle" class="modal-title"></h3>
+                    <button id="closeModalBtn" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-content">
+                    <p id="modalContent"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Third Page: Simulation Container -->
+    <div id="simulationPage" class="app-container dark-mode hidden">
+        <!-- Space Background Canvas -->
+        <canvas id="spaceCanvas" class="space-canvas"></canvas>
+
+        <!-- Top Controls -->
+        <div class="top-controls">
+            <button id="backToFeaturesBtn" class="control-btn">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button id="themeToggle" class="control-btn">
+                <i class="fas fa-sun"></i>
+            </button>
+            <button id="fullscreenBtn" class="control-btn">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+
+        <!-- Sun -->
+        <div id="sun" class="sun">
+            <div class="sun-inner"></div>
+            <div class="sun-core"></div>
+        </div>
+
+        <!-- Earth Orbit -->
+        <div class="earth-orbit">
+            <div class="earth"></div>
+        </div>
+
+        <!-- L1 Point -->
+        <div id="l1Point" class="l1-point">
+            <div class="l1-marker"></div>
+            <div class="l1-label">L1 Point</div>
+            <div class="spacecraft">
+                <div class="spacecraft-body"></div>
+            </div>
+            <div class="spacecraft-label">Aditya-L1</div>
+        </div>
+
+        <!-- Orbital Lines -->
+        <svg class="orbital-lines" width="300" height="200">
+            <path d="M 0 100 Q 150 90 280 100" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1" fill="none" stroke-dasharray="5,5"/>
+        </svg>
+
+        <!-- CME Animation Elements -->
+        <div id="cmeShockwave" class="cme-shockwave hidden"></div>
+        <svg id="cmePlasma" class="cme-plasma hidden" width="300" height="200">
+            <defs>
+                <linearGradient id="plasmaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.8"/>
+                    <stop offset="50%" stop-color="#f7931e" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#ffeb3b" stop-opacity="0.4"/>
+                </linearGradient>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <path id="plasmaPath" d="M 0 100 Q 150 90 280 100" stroke="url(#plasmaGradient)" stroke-width="8" fill="none" filter="url(#glow)"/>
+        </svg>
+
+        <!-- Status Messages -->
+        <div id="statusMessage" class="status-message hidden">
+            <div class="status-content">
+                <h2 id="statusTitle"></h2>
+                <p id="statusText"></p>
+                <div id="statusDetails"></div>
+            </div>
+        </div>
+
+        <!-- Graphs Display -->
+        <div id="graphsPanel" class="graphs-panel hidden">
+            <div class="graphs-header">
+                <h1>🛰 Aditya-L1 Live Data Analysis</h1>
+                <p>Real-time solar wind measurements during CME event</p>
+            </div>
+
+            <div class="graphs-grid">
+                <div class="graph-card">
+                    <h3>🔵 Proton Density <span>(particles/cm³)</span></h3>
+                    <canvas id="densityChart" width="400" height="200"></canvas>
+                </div>
+
+                <div class="graph-card">
+                    <h3>🟢 Proton Velocity <span>(km/s)</span></h3>
+                    <canvas id="velocityChart" width="400" height="200"></canvas>
+                </div>
+
+                <div class="graph-card">
+                    <h3>🟣 Proton Flux <span>(particles/cm²/s)</span></h3>
+                    <canvas id="fluxChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <div class="summary-stats">
+                <div class="stat-card">
+                    <h4>📊 Event Summary</h4>
+                    <div id="eventSummary"></div>
+                </div>
+
+                <div class="stat-card">
+                    <h4>⚠ Impact Analysis</h4>
+                    <div id="impactAnalysis"></div>
+                </div>
+
+                <div class="stat-card">
+                    <h4>✅ Mission Status</h4>
+                    <div class="mission-status">
+                        <div>Spacecraft: <span class="status-good">Operational</span></div>
+                        <div>Data Quality: <span class="status-good">Excellent</span></div>
+                        <div>Instruments: <span class="status-good">All Active</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div id="bottomControls" class="bottom-controls hidden">
+            <div class="controls-panel">
+                <div class="playback-controls">
+                    <button id="playPauseBtn" class="control-btn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button id="resetBtn" class="control-btn">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                    <div class="phase-indicator">
+                        Phase: <span id="currentPhase">INPUT</span>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-header">
+                        <span>Timeline Progress</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    
+                    <div class="timeline-track">
+                        <div id="timelineProgress" class="timeline-progress"></div>
+                        
+                        <div class="phase-marker" style="left: 0%" data-phase="CME Launch">
+                            <div class="marker-dot yellow"></div>
+                            <div class="marker-label">CME Launch</div>
+                        </div>
+                        
+                        <div class="phase-marker" style="left: 25%" data-phase="Travel">
+                            <div class="marker-dot orange"></div>
+                            <div class="marker-label">Travel</div>
+                        </div>
+                        
+                        <div class="phase-marker" style="left: 60%" data-phase="L1 Impact">
+                            <div class="marker-dot red"></div>
+                            <div class="marker-label">L1 Impact</div>
+                        </div>
+                        
+                        <div class="phase-marker" style="left: 80%" data-phase="Analysis">
+                            <div class="marker-dot green"></div>
+                            <div class="marker-label">Analysis</div>
+                        </div>
+                        
+                        <div id="timelineIndicator" class="timeline-indicator"></div>
+                    </div>
+                    
+                    <input type="range" id="timelineScrubber" class="timeline-scrubber" min="0" max="100" value="0">
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase Indicator -->
+        <div id="phaseIndicator" class="phase-indicator-top hidden">
+            <div class="phase-content">
+                <div class="phase-status">CME Event Status</div>
+                <div class="phase-info">
+                    <div id="phaseStatusDot" class="status-dot"></div>
+                    <span id="phaseStatusText">Initializing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Feature data for analysis page
+        const physicsFeatures = [
+            {
+                id: "advanced-cme-detection",
+                title: "Advanced CME Detection Parameter",
+                description: "Combines MHD, kinetic and thermodynamic principles into a unified metric to detect CME boundaries in solar wind.",
+                detailedExplanation: "This advanced parameter integrates magnetohydrodynamic (MHD) theory with kinetic plasma physics and thermodynamic principles. It creates a comprehensive detection algorithm that can identify CME boundaries by analyzing multiple plasma parameters simultaneously, including magnetic field variations, particle density changes, and temperature fluctuations. The unified metric provides superior accuracy compared to single-parameter detection methods."
+            },
+            {
+                id: "dynamic-pressure",
+                title: "Dynamic Pressure",
+                description: "Represents a fundamental parameter in MHD.",
+                detailedExplanation: "Dynamic pressure (Pdyn = ρv²) is a crucial parameter in magnetohydrodynamics that represents the kinetic energy density of the plasma flow. In the context of CME detection, sudden increases in dynamic pressure often indicate the arrival of a CME shock front. This parameter is essential for understanding the momentum transfer between the solar wind and planetary magnetospheres."
+            },
+            {
+                id: "plasma-frequency",
+                title: "Plasma Frequency",
+                description: "Natural frequency of plasma particles when displaced from equilibrium.",
+                detailedExplanation: "The plasma frequency (ωp = √(ne²/ε₀m)) represents the natural oscillation frequency of electrons in a plasma when they are displaced from equilibrium. This fundamental parameter is crucial for understanding wave propagation in the solar wind and helps identify plasma instabilities associated with CME passages. Changes in plasma frequency can indicate variations in electron density during CME events."
+            },
+            {
+                id: "entropy-proxy",
+                title: "Entropy Proxy",
+                description: "γ = 5/3 for ideal gas, (γ–1) = 2/3, fundamental to thermodynamic relationships.",
+                detailedExplanation: "The entropy proxy uses the adiabatic index γ to characterize the thermodynamic state of the solar wind plasma. For an ideal monatomic gas, γ = 5/3, making (γ-1) = 2/3. This parameter helps identify thermodynamic anomalies in the solar wind that may indicate CME material, which often has different thermodynamic properties compared to ambient solar wind due to its different origin and evolution."
+            },
+            {
+                id: "mach-number",
+                title: "Mach Number",
+                description: "Sound speed carries information about change of pressure through plasma.",
+                detailedExplanation: "The Mach number (M = v/cs) compares the flow velocity to the sound speed in the plasma. In solar wind analysis, the Mach number helps identify shock waves and compression regions associated with CMEs. Fast-mode shocks (M > 1) often precede CME magnetic clouds, while slow-mode features may be found within the CME itself. The sound speed variations carry crucial information about pressure changes in the plasma."
+            },
+            {
+                id: "kinetic-impact-index",
+                title: "Kinetic Impact Index",
+                description: "Z-score normalization of log-transformed Ram Pressure Proxy (Np × Vp²).",
+                detailedExplanation: "The Kinetic Impact Index applies statistical normalization to the ram pressure proxy (Np × Vp²) using Z-score transformation of log-transformed values. This index quantifies the kinetic impact potential of solar wind structures, with high values indicating enhanced momentum flux that could significantly affect planetary magnetospheres. The logarithmic transformation helps handle the wide dynamic range of solar wind parameters."
+            }
+        ];
+
+        const statisticalFeatures = [
+            {
+                id: "cme-index",
+                title: "CME Index",
+                description: "Z_Np, Z_Vp, and Z_Tp (Z-score normalized density, velocity, temperature). Peaks when all 3 spike simultaneously.",
+                detailedExplanation: "The CME Index combines three Z-score normalized parameters: density (Z_Np), velocity (Z_Vp), and temperature (Z_Tp). This composite index reaches maximum values when all three parameters simultaneously deviate from their normal ranges, providing a robust statistical indicator of CME passage. The simultaneous enhancement of these parameters is a characteristic signature of CME events."
+            },
+            {
+                id: "velocity-fluctuation",
+                title: "Velocity Fluctuation",
+                description: "Supersonic variations in Vp reflect solar wind turbulence.",
+                detailedExplanation: "Velocity fluctuations measure the variability in proton velocity (Vp) that exceeds the local sound speed, indicating supersonic turbulence in the solar wind. These fluctuations are often enhanced within CME structures due to internal turbulence and interaction with the ambient solar wind. High-frequency velocity variations can indicate the presence of flux rope structures or shock-compressed regions within CMEs."
+            },
+            {
+                id: "enhancement-factor",
+                title: "Enhancement Factor",
+                description: "Measures deviation from normal values—an indicator of possible CME events.",
+                detailedExplanation: "The Enhancement Factor quantifies how much observed parameters deviate from their statistical normal values, typically calculated as the ratio of observed to expected values. Values significantly greater than 1 indicate potential CME events. This factor is particularly useful for identifying subtle CME signatures that might not trigger other detection algorithms, providing a sensitive measure of solar wind anomalies."
+            },
+            {
+                id: "spectral-index",
+                title: "Spectral Index",
+                description: "Power-law: Flux(E) ∝ E⁻ᵞ, where γ is the spectral index.",
+                detailedExplanation: "The spectral index γ characterizes the energy distribution of particles following a power-law relationship Flux(E) ∝ E⁻ᵞ. In CME analysis, changes in the spectral index can indicate different acceleration mechanisms and particle populations. CME-associated particle events often show distinct spectral characteristics compared to ambient solar wind, with the spectral index providing insights into the acceleration processes within CME structures."
+            },
+            {
+                id: "spectral-curvature",
+                title: "Spectral Curvature",
+                description: "F1, F2, F3 are fluxes in 3 consecutive energy channels; E1, E2, E3 their mean energies.",
+                detailedExplanation: "Spectral curvature analyzes the deviation from a simple power-law by examining fluxes (F1, F2, F3) in three consecutive energy channels with mean energies (E1, E2, E3). This parameter captures the \"bend\" or curvature in the energy spectrum, which can indicate complex acceleration processes or multiple particle populations within CME events. Spectral curvature is particularly sensitive to the presence of energetic particle enhancements associated with CME shocks."
+            },
+            {
+                id: "statistical-summary",
+                title: "Statistical Summary",
+                description: "Comprehensive overview of calculated averages and statistical measures of all features.",
+                detailedExplanation: "The Statistical Summary provides a comprehensive overview of all calculated parameters, including mean values, standard deviations, confidence intervals, and correlation coefficients between different features. This summary helps identify patterns and relationships between various CME indicators, providing a holistic view of the statistical analysis results and helping researchers understand the overall characteristics of the detected CME event."
+            }
+        ];
+
+        // Main App Class
+        class IntegratedSolarCMEApp {
+            constructor() {
+                this.currentView = 'firstPage';
+                this.currentTab = 'physics';
+                this.cmeData = {};
+                this.video = document.getElementById('solarVideo');
+                this.formOverlay = document.getElementById('formOverlay');
+                this.loadingIndicator = document.getElementById('loadingIndicator');
+                this.form = document.getElementById('cmeForm');
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.startProgressAnimation();
+                this.createFloatingParticles();
+            }
+
+            setupEventListeners() {
+                // Video events
+                this.video.addEventListener('ended', () => {
+                    this.showForm();
+                });
+
+                this.video.addEventListener('error', (e) => {
+                    console.error('Video error:', e);
+                    setTimeout(() => {
+                        this.showForm();
+                    }, 2000);
+                });
+
+                // Form submission - go to analysis page
+                this.form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleFormSubmit(e);
+                });
+
+                // Analysis page controls
+                document.getElementById('backToForm').addEventListener('click', () => {
+                    this.showView('firstPage');
+                });
+
+                document.getElementById('proceedToSimulation').addEventListener('click', () => {
+                    this.showView('simulationPage');
+                });
+
+                // Tab switching
+                document.getElementById('physicsTab').addEventListener('click', () => {
+                    this.switchTab('physics');
+                });
+
+                document.getElementById('statisticalTab').addEventListener('click', () => {
+                    this.switchTab('statistical');
+                });
+
+                // Modal controls
+                document.getElementById('closeModalBtn').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                // Back to features from simulation
+                document.getElementById('backToFeaturesBtn').addEventListener('click', () => {
+                    this.showView('analysisPage');
+                });
+
+                // Close modal when clicking backdrop
+                document.querySelector('.modal-backdrop').addEventListener('click', () => {
+                    this.closeModal();
+                });
+
+                // Escape key to close modal
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            startProgressAnimation() {
+                const progressFill = document.querySelector('.progress-fill');
+                if (progressFill) {
+                    progressFill.style.animation = 'fillProgress 10s linear forwards';
+                }
+            }
+
+            showForm() {
+                this.loadingIndicator.classList.add('hidden');
+                this.formOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    this.formOverlay.classList.add('show');
+                }, 100);
+
+                // Add staggered animation to form groups
+                const formGroups = document.querySelectorAll('.form-group');
+                formGroups.forEach((group, index) => {
+                    group.style.opacity = '0';
+                    group.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        group.style.transition = 'all 0.5s ease';
+                        group.style.opacity = '1';
+                        group.style.transform = 'translateY(0)';
+                    }, 100 * (index + 1));
+                });
+            }
+
+            handleFormSubmit(e) {
+                const formData = new FormData(e.target);
+                this.cmeData = Object.fromEntries(formData);
+
+                // Validate required fields
+                if (!this.cmeData.date || !this.cmeData.time || !this.cmeData.speed || !this.cmeData.width || !this.cmeData.sourceLocation) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                // Show analysis page
+                this.showView('analysisPage');
+            }
+
+            showView(viewName) {
+                // Hide all views
+                document.getElementById('firstPage').classList.add('hidden');
+                document.getElementById('analysisPage').classList.add('hidden');
+                document.getElementById('simulationPage').classList.add('hidden');
+
+                // Show selected view
+                document.getElementById(viewName).classList.remove('hidden');
+                this.currentView = viewName;
+
+                // Special handling for analysis page
+                if (viewName === 'analysisPage') {
+                    this.renderFeatures();
+                }
+            }
+
+            switchTab(tab) {
+                this.currentTab = tab;
+
+                // Update tab buttons
+                document.getElementById('physicsTab').classList.toggle('active', tab === 'physics');
+                document.getElementById('statisticalTab').classList.toggle('active', tab === 'statistical');
+
+                this.renderFeatures();
+            }
+
+            renderFeatures() {
+                const grid = document.getElementById('featuresGrid');
+                const features = this.currentTab === 'physics' ? physicsFeatures : statisticalFeatures;
+
+                grid.innerHTML = '';
+
+                features.forEach((feature, index) => {
+                    const card = this.createFeatureCard(feature, index);
+                    grid.appendChild(card);
+                });
+            }
+
+            createFeatureCard(feature, index) {
+                const card = document.createElement('div');
+                card.className = 'feature-card';
+                card.style.animationDelay = '${index * 100}ms';
+
+                card.innerHTML = `
+                    <h3 class="feature-title">${feature.title}</h3>
+                    <p class="feature-description">${feature.description}</p>
+                    <button class="learn-more-btn" onclick="app.showModal('${feature.id}')">
+                        <i class="fas fa-info-circle"></i>
+                        Learn More
+                    </button>
+                `;
+
+                return card;
+            }
+
+            showModal(featureId) {
+                const features = this.currentTab === 'physics' ? physicsFeatures : statisticalFeatures;
+                const feature = features.find(f => f.id === featureId);
+
+                if (!feature) return;
+
+                document.getElementById('modalTitle').textContent = feature.title;
+                document.getElementById('modalContent').textContent = feature.detailedExplanation;
+
+                const modal = document.getElementById('featureModal');
+                modal.classList.remove('hidden');
+            }
+
+            closeModal() {
+                const modal = document.getElementById('featureModal');
+                modal.classList.add('hidden');
+            }
+
+            createFloatingParticles() {
+                const particlesContainer = document.querySelector('.floating-particles');
+                if (!particlesContainer) return;
+
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 2 + 's';
+                    particle.style.animationDuration = (2 + Math.random() * 3) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new IntegratedSolarCMEApp();
+        });
+    </script>
+</body>
+</html>

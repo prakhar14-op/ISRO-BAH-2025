@@ -1,0 +1,517 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    background: #000;
+}
+
+.container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Video Background */
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+        rgba(194, 65, 12, 0.2) 0%, 
+        transparent 50%, 
+        rgba(161, 98, 7, 0.3) 100%);
+    z-index: 2;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.loading-indicator.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.loading-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.rotating-sun {
+    animation: rotate 2s linear infinite;
+    color: #fbbf24;
+}
+
+.rotating-sun-slow {
+    animation: rotate 20s linear infinite;
+    color: #fbbf24;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.progress-bar {
+    width: 12rem;
+    height: 0.25rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #fbbf24, #f97316);
+    width: 0%;
+    animation: fillProgress 10s linear forwards;
+}
+
+@keyframes fillProgress {
+    to { width: 100%; }
+}
+
+/* Form Overlay */
+.form-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 4;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.form-overlay.show {
+    opacity: 1;
+}
+
+.form-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.form-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(194, 65, 12, 0.4) 0%, 
+        rgba(133, 77, 14, 0.3) 50%, 
+        rgba(153, 27, 27, 0.4) 100%);
+    backdrop-filter: blur(4px);
+}
+
+.form-card {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    max-width: 48rem;
+    background: linear-gradient(135deg, 
+        rgba(69, 26, 3, 0.9) 0%, 
+        rgba(58, 58, 23, 0.85) 50%, 
+        rgba(69, 10, 10, 0.9) 100%);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.8) translateY(50px);
+    animation: formAppear 0.6s ease forwards 0.2s;
+}
+
+@keyframes formAppear {
+    to {
+        transform: scale(1) translateY(0);
+    }
+}
+
+.form-header {
+    text-align: center;
+    padding: 2rem 2rem 1rem;
+}
+
+.sun-icon {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.form-title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    background: linear-gradient(to right, #fef3c7, #fed7aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.form-description {
+    color: rgba(254, 215, 170, 0.8);
+    font-size: 1.125rem;
+}
+
+.form-content {
+    padding: 0 2rem 2rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    color: #fed7aa;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.form-input {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    color: #fed7aa;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+    color: rgba(253, 186, 116, 0.5);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #fb923c;
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.2);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1rem;
+}
+
+.btn-submit {
+    flex: 1;
+    background: linear-gradient(to right, #f97316, #eab308);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(to right, #ea580c, #ca8a04);
+    transform: scale(1.05);
+}
+
+.btn-replay {
+    background: transparent;
+    border: 1px solid rgba(251, 146, 60, 0.5);
+    color: #fed7aa;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-replay:hover {
+    background: rgba(251, 146, 60, 0.1);
+    border-color: #fb923c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-card {
+        margin: 1rem;
+        max-width: none;
+    }
+    
+    .form-header {
+        padding: 1.5rem 1.5rem 1rem;
+    }
+    
+    .form-content {
+        padding: 0 1.5rem 1.5rem;
+    }
+    
+    .form-title {
+        font-size: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+
+/* Animation for form appearance */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Replace these sections in your existing styles.css file */
+
+/* Form Card - Change from orange to dark theme */
+.form-card {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    max-width: 48rem;
+    background: linear-gradient(135deg, 
+        rgba(20, 20, 20, 0.108) 0%, 
+        rgba(30, 30, 30, 0.9) 50%, 
+        rgba(15, 15, 15, 0.95) 100%);
+    border: 1px solid rgba(100, 100, 100, 0.192);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transform: scale(0.8) translateY(50px);
+    animation: formAppear 0.6s ease forwards 0.2s;
+}
+
+/* Form Backdrop - Change to dark */
+.form-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.167) 0%, 
+        rgba(20, 20, 20, 0.6) 50%, 
+        rgba(10, 10, 10, 0.8) 100%);
+    backdrop-filter: blur(4px);
+}
+
+/* Sun Icon - Change to dark theme */
+.sun-icon {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, #333333, #111111);
+    border: 2px solid #666666;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: #cccccc;
+}
+
+/* Form Title - Change to white/gray gradient */
+.form-title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    background: linear-gradient(to right, #ffffff, #cccccc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+/* Form Description - Change to light gray */
+.form-description {
+    color: rgba(200, 200, 200, 0.9);
+    font-size: 1.125rem;
+}
+
+/* Form Labels - Change to light gray */
+.form-label {
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+/* Form Inputs - Dark theme */
+.form-input {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(100, 100, 100, 0.4);
+    color: #e0e0e0;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+    color: rgba(150, 150, 150, 0.7);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #666666;
+    box-shadow: 0 0 0 3px rgba(100, 100, 100, 0.3);
+}
+
+/* Submit Button - Dark theme */
+.btn-submit {
+    flex: 1;
+    background: linear-gradient(to right, #333333, #111111);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #555555;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(to right, #444444, #222222);
+    border-color: #777777;
+    transform: scale(1.05);
+}
+
+/* Replay Button - Dark theme */
+.btn-replay {
+    background: transparent;
+    border: 1px solid rgba(100, 100, 100, 0.5);
+    color: #e0e0e0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-replay:hover {
+    background: rgba(50, 50, 50, 0.3);
+    border-color: #888888;
+}
+
+/* Skip Button - Dark theme */
+.skip-button {
+    background: rgba(50, 50, 50, 0.4);
+    border: 1px solid rgba(100, 100, 100, 0.5);
+    color: #e0e0e0;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+}
+
+.skip-button:hover {
+    background: rgba(70, 70, 70, 0.5);
+    border-color: #999999;
+}
+
+
+
+/* Video Overlay - Dark theme */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+        rgba(0, 0, 0, 0.3) 0%, 
+        transparent 50%, 
+        rgba(20, 20, 20, 0.4) 100%);
+    z-index: 2;
+}
+
+
+
+.rotating-sun-slow {
+    animation: rotate 20s linear infinite;
+    color: #888888;
+}
+
+.form-group {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }

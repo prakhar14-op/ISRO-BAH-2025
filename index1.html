@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya-L1 CME Simulation</title>
+    <link rel="stylesheet" href="styles1.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="app" class="app-container dark-mode">
+        <!-- Space Background Canvas -->
+        <canvas id="spaceCanvas" class="space-canvas"></canvas>
+
+        <!-- Top Controls -->
+        <div class="top-controls">
+            <button id="themeToggle" class="control-btn">
+                <i class="fas fa-sun"></i>
+            </button>
+            <button id="fullscreenBtn" class="control-btn">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+
+        <!-- Sun -->
+        <div id="sun" class="sun">
+            <div class="sun-inner"></div>
+            <div class="sun-core"></div>
+        </div>
+
+        <!-- Earth Orbit -->
+        <div class="earth-orbit">
+            <div class="earth"></div>
+        </div>
+
+        <!-- L1 Point -->
+        <div id="l1Point" class="l1-point">
+            <div class="l1-marker"></div>
+            <div class="l1-label">L1 Point</div>
+            <div class="spacecraft">
+                <div class="spacecraft-body"></div>
+            </div>
+            <div class="spacecraft-label">Aditya-L1</div>
+        </div>
+
+        <!-- Orbital Lines -->
+        <svg class="orbital-lines" width="300" height="200">
+            <path d="M 0 100 Q 150 90 280 100" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1" fill="none" stroke-dasharray="5,5"/>
+        </svg>
+
+        <!-- CME Animation Elements -->
+        <div id="cmeShockwave" class="cme-shockwave hidden"></div>
+        <svg id="cmePlasma" class="cme-plasma hidden" width="300" height="200">
+            <defs>
+                <linearGradient id="plasmaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.8"/>
+                    <stop offset="50%" stop-color="#f7931e" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#ffeb3b" stop-opacity="0.4"/>
+                </linearGradient>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <!-- Updated path to properly target L1 point -->
+            <path id="plasmaPath" d="M 0 100 Q 150 90 280 100" stroke="url(#plasmaGradient)" stroke-width="8" fill="none" filter="url(#glow)"/>
+        </svg>
+
+        <!-- Input Panel -->
+        <div id="inputPanel" class="input-panel">
+            <div class="input-card">
+                <div class="input-header">
+                    <div class="rotating-sun-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h1 class="input-title">Aditya-L1 CME Simulation</h1>
+                    <p class="input-description">Simulate Coronal Mass Ejection detection at L1 Lagrange Point</p>
+                </div>
+
+                <form id="cmeForm" class="input-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="date">📅 Date of CME</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="time">⏰ Time of CME (UTC)</label>
+                            <input type="time" id="time" name="time" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="speed">🚀 Initial Speed (km/s)</label>
+                            <input type="number" id="speed" name="speed" placeholder="e.g., 500" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="angularWidth">🌐 Angular Width (deg)</label>
+                            <input type="number" id="angularWidth" name="angularWidth" placeholder="e.g., 45" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="sourceLocation">🌞 Source Location</label>
+                        <input type="text" id="sourceLocation" name="sourceLocation" placeholder="e.g., N10W05" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="predictedArrival">⏱️ Predicted Arrival Time (Optional)</label>
+                        <input type="datetime-local" id="predictedArrival" name="predictedArrival">
+                    </div>
+
+                    <button type="submit" class="launch-btn">
+                        🚀 Launch CME Simulation
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="statusMessage" class="status-message hidden">
+            <div class="status-content">
+                <h2 id="statusTitle"></h2>
+                <p id="statusText"></p>
+                <div id="statusDetails"></div>
+            </div>
+        </div>
+
+        <!-- Graphs Display -->
+        <div id="graphsPanel" class="graphs-panel hidden">
+            <div class="graphs-header">
+                <h1>🛰️ Aditya-L1 Live Data Analysis</h1>
+                <p>Real-time solar wind measurements during CME event</p>
+            </div>
+
+            <div class="graphs-grid">
+                <div class="graph-card">
+                    <h3>🔵 Proton Density <span>(particles/cm³)</span></h3>
+                    <canvas id="densityChart" width="400" height="200"></canvas>
+                </div>
+
+                <div class="graph-card">
+                    <h3>🟢 Proton Velocity <span>(km/s)</span></h3>
+                    <canvas id="velocityChart" width="400" height="200"></canvas>
+                </div>
+
+                <div class="graph-card">
+                    <h3>🟣 Proton Flux <span>(particles/cm²/s)</span></h3>
+                    <canvas id="fluxChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <div class="summary-stats">
+                <div class="stat-card">
+                    <h4>📊 Event Summary</h4>
+                    <div id="eventSummary"></div>
+                </div>
+
+                <div class="stat-card">
+                    <h4>⚠️ Impact Analysis</h4>
+                    <div id="impactAnalysis"></div>
+                </div>
+
+                <div class="stat-card">
+                    <h4>✅ Mission Status</h4>
+                    <div class="mission-status">
+                        <div>Spacecraft: <span class="status-good">Operational</span></div>
+                        <div>Data Quality: <span class="status-good">Excellent</span></div>
+                        <div>Instruments: <span class="status-good">All Active</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div id="bottomControls" class="bottom-controls hidden">
+            <div class="controls-panel">
+                <div class="playback-controls">
+                    <button id="playPauseBtn" class="control-btn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button id="resetBtn" class="control-btn">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                    <div class="phase-indicator">
+                        Phase: <span id="currentPhase">INPUT</span>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-header">
+                        <span>Timeline Progress</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    
+                    <div class="timeline-track">
+                        <div id="timelineProgress" class="timeline-progress"></div>
+                        
+                        <div class="phase-marker" style="left: 0%" data-phase="CME Launch">
+                            <div class="marker-dot yellow"></div>
+                            <div class="marker-label">CME Launch</div>
+                        </div>
+                        
+                        <div class="phase-marker" style="left: 25%" data-phase="Travel">
+                            <div class="marker-dot orange"></div>
+                            <div class="marker-label">Travel</div>
+                        </div>
+                        
+                        <div class="phase-marker" style="left: 60%" data-phase="L1 Impact">
+                            <div class="marker-dot red"></div>
+                            <div class="marker-label">L1 Impact</div>
+                        </div>
+                        
+                        <div class="phase-marker" style="left: 80%" data-phase="Analysis">
+                            <div class="marker-dot green"></div>
+                            <div class="marker-label">Analysis</div>
+                        </div>
+                        
+                        <div id="timelineIndicator" class="timeline-indicator"></div>
+                    </div>
+                    
+                    <input type="range" id="timelineScrubber" class="timeline-scrubber" min="0" max="100" value="0">
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase Indicator -->
+        <div id="phaseIndicator" class="phase-indicator-top hidden">
+            <div class="phase-content">
+                <div class="phase-status">CME Event Status</div>
+                <div class="phase-info">
+                    <div id="phaseStatusDot" class="status-dot"></div>
+                    <span id="phaseStatusText">Initializing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="script1.js"></script>
+</body>
+</html>

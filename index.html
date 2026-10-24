@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar CME Data Collection</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Video Background -->
+        <video id="solarVideo" class="video-background" autoplay muted>
+            <source src="19cae5f7-009d-4bc3-add2-1f529a11d94b.mp4.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Video Overlay Gradient -->
+        <div class="video-overlay"></div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="loading-content">
+                <div class="loading-icon">
+                    <i class="fas fa-sun rotating-sun"></i>
+                    <span>Solar System Loading...</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Overlay -->
+        <div id="formOverlay" class="form-overlay hidden">
+            <div class="form-backdrop"></div>
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="sun-icon">
+                        <i class="fas fa-sun rotating-sun-slow"></i>
+                    </div>
+                    <h1 class="form-title">Coronal Mass Ejection Data</h1>
+                    <p class="form-description">Record solar event parameters for analysis</p>
+                </div>
+
+                <div class="form-content">
+                    <form id="cmeForm">
+                        <div class="form-grid">
+                            <!-- Date of CME -->
+                            <div class="form-group">
+                                <label for="date" class="form-label">
+                                    <i class="fas fa-calendar"></i>
+                                    Date of CME
+                                </label>
+                                <input type="date" id="date" name="date" class="form-input" required>
+                            </div>
+
+                            <!-- Time of CME -->
+                            <div class="form-group">
+                                <label for="time" class="form-label">
+                                    <i class="fas fa-clock"></i>
+                                    OnSet Time
+                                </label>
+                                <input type="time" id="time" name="time" class="form-input" required>
+                            </div>
+
+                            <!-- Initial Speed -->
+                            <div class="form-group">
+                                <label for="speed" class="form-label">
+                                    <i class="fas fa-rocket"></i>
+                                    Initial Speed (km/s)
+                                </label>
+                                <input type="number" id="speed" name="speed" placeholder="e.g., 500" class="form-input" required>
+                            </div>
+
+                            <!-- Angular Width -->
+                            <div class="form-group">
+                                <label for="width" class="form-label">
+                                    <i class="fas fa-bolt"></i>
+                                    Angular Width (deg)
+                                </label>
+                                <input type="number" id="width" name="width" placeholder="e.g., 45" class="form-input" required>
+                            </div>
+                        </div>
+
+                 
+                        
+
+                        <!-- Predicted Arrival Time (Optional) -->
+                        <div class="form-group full-width">
+                            <label for="arrival" class="form-label">
+                                <i class="fas fa-clock"></i>
+                                Predicted Arrival Time at L1 (Optional)
+                            </label>
+                            <input type="datetime-local" id="arrival" name="arrival" class="form-input">
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">
+                                Submit CME Data
+                            </button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
